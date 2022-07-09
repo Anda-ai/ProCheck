@@ -11,8 +11,6 @@ import com.kapelle.procheck.Classes.IdFormat;
 import com.kapelle.procheck.Model.BusinessDetailsEntity;
 import com.kapelle.procheck.Model.ProfileDetailsEntity;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -97,20 +95,13 @@ public class register {
     @PostMapping("/login_success_handler")
 	public String loginSuccessHandler(){
         return "redirect:/";
-            
 	}
-    /*@RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String pro(Map<String, Object> model, @RequestParam String u, @RequestParam String s) {//@RequestParam allow url with question mark
-        model.put("message", u+"'s videos");
-        //return "proreg";
-        return "pro-registration";//https://www.codegrepper.com/code-examples/java/spring+boot+save+file+to+static+folder
-    }*/
     @GetMapping("/register")
-	public String pro(Map<String, Object> model) {
+	public String pro() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); 
         if (!(authentication instanceof AnonymousAuthenticationToken)) { 
             if(authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("PRO"))){
-                return "redirect:/home";
+                return "redirect:/";
             }
             else{
                 return "pro-registration";
@@ -135,23 +126,22 @@ public class register {
         if (!(authentication instanceof AnonymousAuthenticationToken)) { 
             String currentUsername = authentication.getName(); 
             UserEntity user = userRepository.findByUsername(currentUsername);
-            Long user_id = Long.valueOf(user.getId());
-            if(!businessDetailsRepository.existsByUserId(user_id)){
+            if(!businessDetailsRepository.existsByUser(user)){
                 Long pro_id = IdFormat.generateId();
                 while(userRepository.existsById(pro_id)){//in case id gets generated at them same time as other users
                     pro_id++;
                 }
                 pro.setId(pro_id);   
-                pro.setUserId(user_id);
+                pro.setUser(user);
                 businessDetailsRepository.save(pro);
             }
             else{//in case of updating
-                BusinessDetailsEntity protoUpdate = businessDetailsRepository.findByUserId(user_id);
+                BusinessDetailsEntity protoUpdate = businessDetailsRepository.findByUser(user);
                 Long pro_id = protoUpdate.getId();
                 pro.setId(pro_id);
-                pro.setUserId(user_id);//to avoid re-parsing user-id as null
+                pro.setUser(user);//to avoid re-parsing user-id as null
                 businessDetailsRepository.save(pro);
-                System.out.println("Success!!"+user_id);
+                System.out.println("Success!!"+user);
             }
             attr.addFlashAttribute("slide", 2);
             return"redirect:/register";
@@ -171,17 +161,13 @@ public class register {
             return "redirect:/register";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); 
-        //Set<GrantedAuthority> authorities = new HashSet<>();
         String currentUsername = authentication.getName(); 
         UserEntity user = userRepository.findByUsername(currentUsername);
-        Long user_id = Long.valueOf(user.getId());
         if (!(authentication instanceof AnonymousAuthenticationToken)) { 
-            //To update:
-            BusinessDetailsEntity protoUpdate = businessDetailsRepository.findByUserId(user_id);
+            BusinessDetailsEntity protoUpdate = businessDetailsRepository.findByUser(user);
             pro.setId(protoUpdate.getId());
-            pro.setUserId(user_id);
+            pro.setUser(user);
             user.setRole("PRO");
-            //authentication.add(new SimpleGrantedAuthority("PRO"));
             profileDetailsRepository.save(pro);
             autoLogin(user, request);
             return"redirect:/";
@@ -189,21 +175,9 @@ public class register {
         else{
             JSONArray serviceArr = new JSONArray("");
             JSONObject mainserviceObj = serviceArr.getJSONObject(0);
-            //mainserviceObj.getString("servicename")
             return"redirect:/login";
         }
     }
-/* 
-    @PostMapping("/register")
-	public ResponseEntity<Model> pro(@ModelAttribute("user") @Validated ProEntity pro , BindingResult result, RedirectAttributes attr, HttpServletRequest request) {
-        
-            if (result.hasErrors()) {
-                System.out.println("errors: "+result.getAllErrors());
-                attr.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
-                attr.addFlashAttribute("user", pro);
-                return "signup";
-            }
-	}*/
     @RequestMapping(value="/logout", method = RequestMethod.GET) 
     public String logoutPage (HttpServletRequest request, HttpServletResponse response) { 
         System.out.println("preparing to log out...");
@@ -213,7 +187,7 @@ public class register {
             new SecurityContextLogoutHandler().logout(request, response, authentication); 
             System.out.println("logged out!");
         }
-        return "redirect:/login"; //You can redirect wherever you want, but generally it's a good practice to show login screen again.
+        return "redirect:/"; //You can redirect wherever you want, but generally it's a good practice to show login screen again.
     }
     private void autoLogin(UserEntity user, HttpServletRequest request){
         try {

@@ -4,19 +4,15 @@
  */
 package com.kapelle.procheck.Controller;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kapelle.procheck.Model.ProfileDetailsEntity;
 import com.kapelle.procheck.Model.ProfileDetailsRepository;
@@ -27,50 +23,54 @@ import com.kapelle.procheck.Model.UserRepository;
 @Controller
 public class UserController {
     
-        @Autowired
-        UserRepository userRepository;
-        
-        @Autowired
-        ProfileDetailsRepository profileDetailsRepository;
-
-        @Autowired
-        ProfileRepository profileRepository;
-
-        @Autowired
-        ServletContext context; 
-
-        
+    @Autowired
+    UserRepository userRepository;
     
-	// inject via application.properties
-	@Value("${welcome.message:test}")
-	private String message = "Hello";
+    @Autowired
+    ProfileDetailsRepository profileDetailsRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
+
+    @Autowired
+    ServletContext context; 
 
 	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
 	public String welcome(Model model, @PathVariable("username") String username) {
 		
         if(userRepository.findByUsername(username) != null){
-            UserEntity user = userRepository.findByUsername(username);//
-            Long user_id = Long.valueOf(user.getId());
-            ProfileDetailsEntity pro = profileDetailsRepository.findByUserId(user_id);//
+            UserEntity user = userRepository.findByUsername(username);
+            ProfileDetailsEntity pro = profileDetailsRepository.findByUser(user);
             model.addAttribute("user", user);
             model.addAttribute("pro", pro);
-            return "pro";
+            return "profile";
         } 
         else{
             return "redirect:/";
         } 
 	}
-        @RequestMapping(value = "/{username}/videos", method = RequestMethod.GET)
-	public String userVideos(Map<String, Object> model, @PathVariable("username") String username) {
-		model.put("message", username+"'s videos");
-		return "user";
+    @RequestMapping(value = "/project", method = RequestMethod.GET)
+    public String project(@RequestParam String id){
+        return "project";
+    }
+    @RequestMapping(value = "/projects", method = RequestMethod.GET)
+	public String projects(Model model) {
+		return "projects";
 	}
-        @GetMapping(path = "/all")
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+    @RequestMapping(value = "/{username}/projects", method = RequestMethod.GET)
+	public String userProjects(Model model, @PathVariable("username") String username) {
+		return "profile";//TODO:  this view users projects on user profile
+	}
+    @RequestMapping(value = "/post", method = RequestMethod.GET)
+    public String post(@RequestParam String id){
+        return "post";
     }
-    @GetMapping("/image")
-    public void image(){
-       System.out.println("Path"+context.getRealPath(""));
-    }
+    @RequestMapping(value = "/posts", method = RequestMethod.GET)
+	public String posts(Model model) {
+		return "posts";
+	}
+    @RequestMapping(value = "/{username}/posts", method = RequestMethod.GET)
+	public String userPosts(Model model, @PathVariable("username") String username) {
+		return "posts";//TODO: Note: this view users posts on user profile
+	}
 }

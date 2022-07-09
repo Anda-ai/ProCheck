@@ -4,6 +4,8 @@ import com.kapelle.procheck.Classes.JSONArrayConverter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -18,8 +20,9 @@ public class ProfileDetailsEntity{
     @Column(name = "id")
     public Long id;
 
-    @Column(name = "userId")
-    public Long userId;
+    @ManyToOne
+    @JoinColumn(name="userId")
+    public UserEntity user;
 
     @Column(name = "mainservice", columnDefinition = "json")
     @Convert(converter= JSONArrayConverter.class)
@@ -60,11 +63,11 @@ public class ProfileDetailsEntity{
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UserEntity getUser() {
+        return user;
     }
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public JSONArray getMainservice() {
@@ -121,7 +124,6 @@ public class ProfileDetailsEntity{
     public String toString() {
     return "Pro{" +
             "id='" + id +
-            "userid='" + userId +
             "', mainservice='" + mainservice +
             "', otherservices='" + otherservices +
             "', experience='" + experience +

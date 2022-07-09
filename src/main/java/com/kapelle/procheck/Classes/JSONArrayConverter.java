@@ -5,7 +5,6 @@ package com.kapelle.procheck.Classes;
  * @author anda
  */
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

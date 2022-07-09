@@ -4,6 +4,8 @@ import com.kapelle.procheck.Classes.JSONArrayConverter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -19,8 +21,9 @@ public class BusinessDetailsEntity{
     @Column(name = "id", unique=true)
     public Long id;
 
-    @Column(name = "userId")
-    public Long userId;
+    @ManyToOne
+    @JoinColumn(name="userId")
+    public UserEntity user;
 
     @Column(name = "companyname", columnDefinition = "varchar(100)")
     @NotEmpty(message = "Company name must be filled")
@@ -63,11 +66,11 @@ public class BusinessDetailsEntity{
         this.id = id;
     }
     
-    public Long getUserId() {
-        return userId;
+    public UserEntity getUser() {
+        return user;
     }
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public String getCompanyname() {
@@ -129,7 +132,6 @@ public class BusinessDetailsEntity{
 public String toString() {
     return "Pro{" +
             "id='" + id +
-            "', userid='" + userId +
             "', companyname='" + companyname +
             "', address='" + address +
             "', email='" + email +

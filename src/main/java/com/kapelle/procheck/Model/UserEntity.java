@@ -7,10 +7,14 @@ import com.kapelle.procheck.Validation.UsernameFormatConstraint;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -114,6 +118,7 @@ public class UserEntity{
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getUsername() {
         return username;

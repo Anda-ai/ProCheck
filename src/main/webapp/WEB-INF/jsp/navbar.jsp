@@ -38,27 +38,27 @@
               <a href="#" id="contacts" class="dropdown-link nav-bar _w-dropdown-link w-dropdown-link">Contact</a>
               <a href="#" id="faqs" class="dropdown-link nav-bar _w-dropdown-link w-dropdown-link">FAQs</a>
               <a href="#" id="jobs" class="dropdown-link nav-bar _w-dropdown-link w-dropdown-link">Jobs</a>
-              <security:authorize access="isAuthenticated()">
-                <a href="/logout" id="jobs" class="dropdown-link nav-bar _w-dropdown-link w-dropdown-link">Logout</a>
+              <!--TODO:--><security:authorize access="isAuthenticated()">
+                <!--TODO:--><a href="/logout" id="jobs" class="dropdown-link nav-bar _w-dropdown-link w-dropdown-link">Logout</a>
               </security:authorize>
             </nav>
           </div>
         </div>
         <div class="nav-cta-button-container">
           <a href="#" class="button button-menu w-button">Book a Service</a>
-          <security:authorize access="hasAuthority('USER')"> 
+          <!--TODO:--><security:authorize access="hasAuthority('USER')"> 
               <a href="/register" class="button button-menu w-button">Become a Pro</a>
             </security:authorize>
-          <security:authorize access="!isAuthenticated()">
-            <a href="/login" class="button button-menu w-button">Login</a>
+          <!--TODO:--><security:authorize access="!isAuthenticated()">
+            <!--TODO:--><a href="/login" class="button button-menu w-button">Login</a>
           </security:authorize>
         </div>
       </nav>
       <div class="menu-button _w-nav-button w-nav-button"><img src="images/606efa4277770b3e42ccf65b_Menu-Icon.svg" loading="lazy" alt="" class="menu-icon"></div>
-      <security:authorize access="isAuthenticated()">
-        <c:set var="username"><security:authentication property="name"/></c:set>
+      <!--TODO:--><security:authorize access="isAuthenticated()">
+        <!--TODO:--><c:set var="username"><security:authentication property="name"/></c:set>
         <!--a id="profile-link" href="#" class="author-testimonial w-inline-block"><img id="profile-photo" src="images/avatar-03.png" alt="" class="userimage"-->
-        <a id="profile-link" href="/${username}" class="author-testimonial w-inline-block"><img id="profile-photo" src="/profile?u=${username}" alt="" class="userimage">
+        <!--TODO:--><a id="profile-link" href="/${username}" class="author-testimonial w-inline-block"><!--TODO:--><img id="profile-photo" src="/profile?u=${username}" alt="" class="userimage">
           <div>
             <div id="firstname" class="username nav"><security:authentication property="name"/></div>
           </div>
