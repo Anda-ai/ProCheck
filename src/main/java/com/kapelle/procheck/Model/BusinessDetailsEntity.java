@@ -11,7 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import javax.persistence.Convert;
-import org.json.JSONArray;
+import com.github.openjson.JSONArray;
 
 @Entity
 @Table(name = "pros")
@@ -22,7 +22,7 @@ public class BusinessDetailsEntity{
     public Long id;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(nullable = false, name = "user_id")
     public UserEntity user;
 
     @Column(name = "companyname", columnDefinition = "varchar(100)")

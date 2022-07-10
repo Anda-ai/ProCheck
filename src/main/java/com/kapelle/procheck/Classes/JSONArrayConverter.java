@@ -1,13 +1,9 @@
 package com.kapelle.procheck.Classes;
 
-/**
- *
- * @author anda
- */
-import org.json.JSONArray;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+
+import com.github.openjson.JSONArray;
 
 @Converter
 public class JSONArrayConverter implements AttributeConverter<JSONArray, String> {
@@ -15,7 +11,8 @@ public class JSONArrayConverter implements AttributeConverter<JSONArray, String>
     @Override
     public String convertToDatabaseColumn(JSONArray jsonData) {
         String json;
-        if(jsonData == null || jsonData.isEmpty()){
+        //if(jsonData == null || jsonData.isEmpty()){//org.jsom
+        if(jsonData == null || jsonData.isNull(0)){//com.github.openjson
             json = "";
         }
         else{

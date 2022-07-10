@@ -52,7 +52,10 @@ public class FilesController {
     //private static String imgPath = "/Users/anda";
     
     
-
+    @GetMapping("/test")
+	public String test() {
+        return "test";
+    }
 	@GetMapping("/profileupdate")
 	public String ProlifeFileUploadPage() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); 

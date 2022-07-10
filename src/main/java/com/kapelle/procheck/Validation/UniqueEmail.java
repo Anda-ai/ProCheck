@@ -25,7 +25,7 @@ public class UniqueEmail implements ConstraintValidator<UniqueEmailConstraint, S
             return false;
         }
         try{
-            UserEntity user = userRespository.findByEmail(email);
+            UserEntity user = userRespository.findByEmailIgnoreCase(email);
             if(user != null){
                 return false;
             }

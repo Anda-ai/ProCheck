@@ -7,21 +7,18 @@ import com.kapelle.procheck.Validation.UsernameFormatConstraint;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.json.JSONArray;
+import com.github.openjson.JSONArray;
 
 /**
  *
@@ -73,8 +70,8 @@ public class UserEntity{
     @Email(message = "Please enter valid email address")
     public String email;
     
-    @Column(name = "emailverication", columnDefinition = "boolean")
-    public Boolean isEmail = false;
+    //@Column(name = "emailverication", columnDefinition = "boolean")
+    public Boolean isEnabled = false;
     
     @Column(name = "country")
     public transient String country;
@@ -162,11 +159,11 @@ public class UserEntity{
         this.email = email;
     }
     
-    public Boolean isEmail() {
-        return isEmail;
+    public Boolean isEnabled() {
+        return isEnabled;
     }
-    public void isEmail(Boolean isEmail) {
-        this.isEmail = isEmail;
+    public void setEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 
     public String getCountry() {
@@ -249,7 +246,7 @@ public class UserEntity{
                 "', firstname='" + firstname +
                 "', lastname='" + lastname +
                 "', email='" + email +
-                "', isEmail='" + isEmail +
+                "', isEnabled='" + isEnabled +
                 "', address='" + address +
                 "', followers='" + followers +
                 "', following='" + following +

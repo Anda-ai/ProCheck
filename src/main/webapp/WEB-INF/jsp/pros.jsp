@@ -29,29 +29,6 @@
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=62a0b37073f7e077be73e6a3" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   <script src="js/webflow.js" type="text/javascript"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
-  <!--TODO:--><script>
-    $(window).on('scroll', onScroll); 
-    /*
-    There isn't a "Stopped Scrolling" event. 
-    If you want to do something after the user has finished scrolling, 
-    you can set a timer in the "OnScroll" event. 
-    If you get another "OnScroll" event fired then reset the timer. 
-    When the timer finally does fire, then you can assume the scrolling has stopped. 
-    I would think 500 milliseconds would be a good duration to start with.
-    */
-    var scrollTimer = -1;
-    function onScroll(){ 
-      if( $(window).scrollTop() + window.innerHeight == document.body.scrollHeight ) { 
-        if (scrollTimer != -1)
-          clearTimeout(scrollTimer);
-        scrollTimer = window.setTimeout( addMore(), 150);
-      }
-    }
-    function addMore(){
-      $.get("/getpros", function(data){
-          $("#items").append(data);
-      });
-    }
-    </script>
+  <!--TODO:--><script src="js/pros.js" type="text/javascript"></script>
   </body>
 </html>

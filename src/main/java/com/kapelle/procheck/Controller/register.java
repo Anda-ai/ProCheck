@@ -1,5 +1,7 @@
 package com.kapelle.procheck.Controller;
 import com.kapelle.procheck.Model.BusinessDetailsRepository;
+import com.kapelle.procheck.Model.ConfirmationToken;
+import com.kapelle.procheck.Model.ConfirmationTokenRepository;
 import com.kapelle.procheck.Model.ProfileDetailsRepository;
 /**
  *
@@ -7,6 +9,7 @@ import com.kapelle.procheck.Model.ProfileDetailsRepository;
  */
 import com.kapelle.procheck.Model.UserEntity;
 import com.kapelle.procheck.Model.UserRepository;
+import com.kapelle.procheck.Security.EmailSenderService;
 import com.kapelle.procheck.Classes.IdFormat;
 import com.kapelle.procheck.Model.BusinessDetailsEntity;
 import com.kapelle.procheck.Model.ProfileDetailsEntity;
@@ -14,14 +17,15 @@ import com.kapelle.procheck.Model.ProfileDetailsEntity;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.github.openjson.JSONArray;
+import com.github.openjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -41,6 +46,12 @@ public class register {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ConfirmationTokenRepository confirmationTokenRepository;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     @Autowired
     BusinessDetailsRepository businessDetailsRepository;
@@ -59,7 +70,7 @@ public class register {
 		return "signup";
 	}
     @PostMapping("/signup")
-	public String addUser(@ModelAttribute("user") @Validated UserEntity user , BindingResult result, RedirectAttributes attr, HttpServletRequest request, HttpServletResponse response){
+	public String addUser(@ModelAttribute("user") @Validated UserEntity user , BindingResult result, RedirectAttributes attr, HttpServletRequest request, HttpServletResponse response, Model model){
         
             System.out.println("Username: "+user.username);
             if (result.hasErrors()) {
@@ -81,9 +92,53 @@ public class register {
             user.setId(userUpdate.getId());*/
             System.out.println("..to Save");
             userRepository.save(user);
+            //autoLogin(user,request);
+            
+            //https://stackabuse.com/spring-security-email-verification-registration/
+            /*
+             * smpt blocked from wifi 
+             * creat non 2nd verification password on gmail app under security settings "Manage third-party access"
+            */
+            /*
+            ConfirmationToken confirmationToken = new ConfirmationToken(user);
+            confirmationTokenRepository.save(confirmationToken);
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("Complete Registration!");
+            mailMessage.setFrom("chand312902@gmail.com");
+            mailMessage.setText("To confirm your account, please click here : "
+            +"http://localhost:9090/confirm-account?token="+confirmationToken.getConfirmationToken());
+
+            emailSenderService.sendEmail(mailMessage);
+
+            model.addAttribute("email", user.getEmail());*/
             autoLogin(user,request);
             return "redirect:/profileupdate";
+            //return "successfulRegisteration";
 	}
+    
+    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
+    public String confirmUserAccount(@RequestParam("token")String confirmationToken, HttpServletRequest request, Model model)
+    {
+        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+
+        if(token != null)
+        {
+            UserEntity user = userRepository.findByEmailIgnoreCase(token.getUser().getEmail());
+            user.setEnabled(true);
+            userRepository.save(user);
+            //autoLogin(user,request);
+            return "accountverified";
+        }
+        else
+        {
+            model.addAttribute("message","The link is invalid or broken!");
+            return "error";
+        }
+
+        
+    }
+
     @GetMapping("/login")
 	public String logging() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); 

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import javax.persistence.Convert;
-import org.json.JSONArray;
+import com.github.openjson.JSONArray;
 
 @Entity
 @Table(name = "pros")
@@ -21,7 +21,7 @@ public class ProfileDetailsEntity{
     public Long id;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(nullable = false, name = "user_id")
     public UserEntity user;
 
     @Column(name = "mainservice", columnDefinition = "json")
